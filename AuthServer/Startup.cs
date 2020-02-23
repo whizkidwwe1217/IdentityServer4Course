@@ -14,7 +14,19 @@ namespace AuthServer
 	{
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddIdentityServer()
+			services.ConfigureApplicationCookie(config =>
+			{
+				config.Cookie.Name = "IdentityServer.Cookie";
+				config.LoginPath = "/Auth/Login";
+			});
+
+			services.AddIdentityServer(options =>
+				{
+					options.UserInteraction = new IdentityServer4.Configuration.UserInteractionOptions
+					{
+						LoginUrl = "/Auth/Login"
+					};
+				})
 				.AddInMemoryApiResources(IdentityConfig.GetApis())
 				.AddInMemoryClients(IdentityConfig.GetClients())
 				.AddInMemoryIdentityResources(IdentityConfig.GetIdentityResources())
